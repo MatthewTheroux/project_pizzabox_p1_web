@@ -1,0 +1,82 @@
+// [I]. HEAD
+//  A] Libraries
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+using PizzaBox.Storage;
+using PizzaBox.Domain.Abstracts;
+using PizzaBox.Domain.Models.Components;
+using PizzaBox.Domain.Models.Components.Toppings;
+
+/// UX Models
+namespace PizzaBox.Client.Web.Models
+{
+  /// the page from which one orders pizza.
+  public class OrderViewModel
+  {
+    // Fetch the components available to make a pizza.
+    public List<PizzaSize> Sizes { get; set; } = new List<PizzaSize>();
+    public List<PizzaCrust> Crusts { get; set; } = new List<PizzaCrust>();
+    public List<PizzaSauce> Sauces { get; set; } = new List<PizzaSauce>();
+    public List<PizzaToppingCheese> Cheeses { get; set; } = new List<PizzaToppingCheese>();
+    public List<APizzaTopping> Toppings { get; set; } = new List<APizzaTopping>();
+    public List<PizzaSpice> Spices { get; set; } = new List<PizzaSpice>();
+
+
+    // Capture the user's selections.
+    [Required(ErrorMessage = "Please select a size.")]
+    [DataType(DataType.Text)]
+    public string SelectedSize { get; set; }
+
+    [Required(ErrorMessage = "Please select a crust type.")]
+    [DataType(DataType.Text)]
+
+    public string SelectedCrust { get; set; }
+
+    [Required(ErrorMessage = "Please select a sauce.")]
+    [DataType(DataType.Text)]
+    public string SelectedSauce { get; set; }
+
+    [Required(ErrorMessage = "Please select a cheese.")]
+    [DataType(DataType.Text)]
+    public string SelectedCheese { get; set; }
+
+    [Required(ErrorMessage = "Please select some toppings.")]
+    [DataType(DataType.Text)]
+
+    public List<APizzaTopping> SelectedToppings { get; set; }
+
+    [Required(ErrorMessage = "Please select a spice.")]
+    [DataType(DataType.Text)]
+    public string SelectedSpice { get; set; }
+
+
+
+    public void Populate(UnitOfWork unitOfWork)
+    {
+      Sizes = unitOfWork.Sizes.ToList(); //Select(size => !string.IsNullOrWhiteSpace(size.Name)).ToList();
+      Crusts = unitOfWork.Crusts.ToList(); //.Select(crust => !string.IsNullOrWhiteSpace(crust.Name)).ToList();
+      Sauces = unitOfWork.Sauces.ToList();//.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
+      Cheeses = unitOfWork.Cheeses.ToList();//.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
+      Toppings = unitOfWork.Toppings.ToList();//.Select(topping => !string.IsNullOrWhiteSpace(topping.Name)).ToList();
+      Spices = unitOfWork.Spices.ToList();//.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
+    }// /md 'Populate' //<!> clean
+
+    /// <summary> Validate the form's user inputs before sending </summary>
+    /// <returns> validation error results </returns>
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+      // Validate that the number of toppings are within range.
+      if (SelectedToppings.Count < 2 || SelectedToppings.Count > 5)
+      {
+        yield return new ValidationResult("Please select at least 2, but no more than 5, toppings", new[] { "SelectedToppings" });
+      }
+      if (SelectedCrust == SelectedSize)
+      {
+        yield return new ValidationResult("Crust type cannot be a Size.");
+      }
+    }// /form validations
+
+  }// /cla 'OrderViewModel'
+}// /ns '..Web.Models'
+ // EoF

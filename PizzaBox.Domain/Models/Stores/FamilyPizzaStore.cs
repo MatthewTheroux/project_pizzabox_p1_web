@@ -1,17 +1,26 @@
-using System;
+
+using System.IO;
+
 using PizzaBox.Domain.Abstracts;
-using PizzaBox.Domain.Models.Orders;
+
 
 namespace PizzaBox.Domain.Models.Stores
 {
-  public class FamilyPizzaStore : APizzaStore
+  public class FamilyPizzaStore : AStore
   {
+
     public FamilyPizzaStore()
     {
-      Name = "FamilyPizzaStore";
-      EntityName = "FamilyPizzaStore";
+      Name = "Family Pizza Store";
     }
 
-  }
 
+
+    // [III]. FOOT
+    ///
+    public override string ToString()
+    {
+      return Name;
+    }
+  }
 }

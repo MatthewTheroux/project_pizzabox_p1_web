@@ -1,74 +1,114 @@
 // [I]. HEAD
 //  A] Libraries
 using System.Collections.Generic;
+using System.Text;
+using System.Xml.Serialization;
 
-using PizzaBox.Domain.Abstracts.PizzaComponents;
-using PizzaBox.Domain.Abstracts.PizzaComponents.PizzaToppings;
+using PizzaBox.Domain.Models;
+using PizzaBox.Domain.Models.Pizzas;
+using PizzaBox.Domain.Models.Components;
+using PizzaBox.Domain.Models.Components.Toppings;
 
-using PizzaBox.Domain.Models.Orders;//<?>
-
-///
+/// 
 namespace PizzaBox.Domain.Abstracts
 {
+  //[DataContract]
+  [XmlInclude(typeof(CheesePizza))]
+  [XmlInclude(typeof(PepperoniPizza))]
+  [XmlInclude(typeof(VegetablePizza))]
+  [XmlInclude(typeof(MeatPizza))]
+  [XmlInclude(typeof(CustomPizza))]
 
   public abstract class APizza : AWare
-  {
-    public Order Order { get; set; } //<?>
+  {    //  B] Fields and Properties 
+    public new string Name { get; set; }
+    public PizzaSize Size { get; set; }
+    public long SizeEntityId { get; set; }//<?>
+    public PizzaCrust Crust { get; set; }
+    public PizzaSauce Sauce { get; set; }
+    public PizzaToppingCheese Cheese { get; set; }
+    public List<APizzaTopping> Toppings { get; set; }
+    public PizzaSpice Spice { get; set; }
 
-    /// the name of the pizza
-    public string Name { get; protected set; }
+    /// i.e., a one-man pizza with no toppings is $5.
+    private static readonly Price BASE_PRICE = new Price(5.00M);
 
-    public APizzaSize Size { get; set; }
-    public APizzaCrust Crust { get; set; }
-    public APizzaSauce Sauce { get; set; }
-    public List<APizzaTopping> Toppings = new List<APizzaTopping>();
+    /// the order that owns this pizza
+    public PizzaOrder Order { get; set; } = null;
 
-    public string PizzaType { get; protected set; }
-    //public double Price { get; protected set; }
-    private const int MAX_TOPPINGS = 5;
 
-    protected List<AComponent> ingrediants;
-
-    /// the direct constructor
-    public APizza(APizzaSize _size, APizzaCrust _crust, APizzaSauce _sauce, APizzaToppingCheese _cheese, params APizzaTopping[] _toppings)
+    /// Calculates the full price of the pizza, based on size and # of toppings
+    public new Price Price
     {
-
+      get
+      {
+        return new Price(
+          Size.PriceMultiplier() *
+          (BASE_PRICE.Amount // of a pizza
+           + (Toppings.Count * APizzaTopping.BASE_PRICE.Amount)
+          ));
+      }
     }
 
-    // public abstract void addCrust(ASize crust = null);
+    // [II]. BODY
+    /// Construct a default-defined pizza (as a concrete child).
+    public APizza() { Factory(); }
+    /// 
+    private void Factory()
+    {
+      // Fill with defaults.
+      Size = new PizzaSize(1);
+      SizeEntityId = 1; //"one-man"
+      Crust = new PizzaCrust();
+      Sauce = new PizzaSauce();
+      Cheese = new Models.Components.Toppings.PizzaToppingCheese();
+      Toppings = new List<APizzaTopping>(); // = no toppings
+      Spice = new PizzaSpice();
+    }// /defaut inherited factory
 
-    // public abstract void addSauce(APizzaSauce sauce = null);
+    //  B] Add | Remove to this Pizza.
+    public void AddTopping(APizzaTopping topping) { Toppings.Add(topping); }
+    public void AddTopping(List<APizzaTopping> toppings)
+    {
+      foreach (APizzaTopping topping in toppings)
+      {
+        AddTopping(topping);
+      }
+    }
 
-    // public abstract void addTopping(params APizzaTopping[] toppings);
+    public void RemoveTopping(int index) { Toppings.RemoveAt(index); }
+    public void RemoveTopping(List<int> indicies)
+    {
+      foreach (int index in indicies)
+      {
+        RemoveTopping(index);
+      }
+    }
 
-    // public void addCrust(ASize crust)
-    // {
-    //   Crust = crust;
-    //   Price += crust.price;
-    //   Price = Math.Round(Price, 2);
-    // }
+    // [III]. FOOT
+    /// the string representation of the pizza
+    public override string ToString()
+    {
+      //  a) head
+      StringBuilder pizzaStringBuilder = new StringBuilder("{a ");
 
-    // public override void addSauce(ASauce sauce)
-    // {
-    //   Sauce = sauce;
-    //   Price += sauce.price;
-    //   Price = Math.Round(Price, 2);
-    // }
+      //  b) body
+      pizzaStringBuilder.Append($"a {Size.ToString()} ");
+      pizzaStringBuilder.Append($"{Crust.ToString()} crust pizza, with ");
+      pizzaStringBuilder.Append($"with {Sauce.ToString()} sauce, ");
+      pizzaStringBuilder.Append($"{Cheese.ToString()} cheese, ");
 
-    // public override void addTopping(params APizzaTopping[] toppings)
-    // {
-    //   foreach (var topping in toppings)
-    //   {
-    //     if (topping == null)
-    //       break;
-    //     Toppings.Add(topping);
-    //     topping.pizza = this;
-    //     Price += topping.price;
-    //   }
+      foreach (APizzaTopping _topping in Toppings)
+      {
+        pizzaStringBuilder.Append($"{_topping.ToString()}, ");
+      }
+      pizzaStringBuilder.Append($"and {Spice} spices");
+      pizzaStringBuilder.Append($" ${Price.ToString()}");
 
-    //   Price = Math.Round(Price, 2);
-    // }
+      //  c) foot
+      return pizzaStringBuilder.ToString();
+    }// /'ToString'
 
-
-  }
-}
+  }// /cla 'APizza'
+}// /ns '..Abstracts'
+ // EoF

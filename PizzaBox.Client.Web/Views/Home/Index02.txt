@@ -1,0 +1,96 @@
+@* Merged w/ ref @2021-05-05-2014-EDT *@
+@* Build off of the established template. *@
+@model PizzaBox.Client.Web.Models.OrderViewModel
+
+<!-- 
+<!DOCTYPE html> -->
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <!--We don't need emojis-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> PizzaBox --Matthew T. Theroux </title>
+</head>
+
+<body>
+  <header>
+    <h1> Welcome to Pizza Box! </h1>
+  </header>
+  <main>
+    <h2> PizzaBox is the world's first pizza-only delivery service. </h2>
+    <ul>
+      @* Razor View Engine *@
+      @foreach (var item in ViewBag)
+      {
+        <li>@item</li>
+      }
+    </ul>
+
+    <form action="/order" method="post">
+      @* Make invalid accesss much more difficult. *@
+      @Html.AntiForgeryToken() @*Yay!*@
+
+      <fieldset> @*1*@<legend>Sizes</legend>
+        @Html.ValidationMessageFor(m => m.SelectedSize)
+        @foreach (var item in Model.Sizes)
+        {
+          <div class="form-check">
+            <input class="form-check-input" type="radio" asp-for="SelectedSize" value="@item">
+            <label class="form-check-label" for="@item">@item</label>
+          </div>
+        }
+      </fieldset> <!-- /sizes -->
+      <fieldset> @*2*@<legend>Crusts</legend>
+        @Html.ValidationMessageFor(m => m.SelectedCrust)
+        @foreach (var item in Model.Crusts)
+        {
+          <div class="form-check">
+            <input class="form-check-input" type="radio" asp-for="SelectedCrust" value="@item">
+            <label class="form-check-label" for="@item">@item</label>
+          </div>
+        }
+      </fieldset> <!-- /crusts -->
+      <fieldset> @*3*@<legend>Sauces</legend>
+        @Html.ValidationMessageFor(m => m.SelectedCrust)
+        @foreach (var item in Model.Sauces)
+        {
+          <div class="form-check">
+            <input class="form-check-input" type="radio" asp-for="SelectedSauce" value="@item">
+            <label class="form-check-label" for="@item">@item</label>
+          </div>
+        }
+      </fieldset> <!-- /sauces -->
+      <fieldset> @*4*@<legend>Cheeses</legend>
+        @Html.ValidationMessageFor(m => m.SelectedCrust)
+        @foreach (var item in Model.Cheeses)
+        {
+          <div class="form-check">
+            <input class="form-check-input" type="radio" asp-for="SelectedCheese" value="@item" />
+            <label class="form-check-label" for="@item">@item</label>
+          </div>
+        }
+      </fieldset> <!-- /cheeses -->
+      <fieldset> @*5*@<legend>Toppings</legend>
+        @Html.ValidationMessageFor(m => m.SelectedCrust)
+        @foreach (var item in Model.Toppings)
+        {
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="SelectedToppings" value="@item">
+            <label class="form-check-label" for="@item">@item</label>
+          </div>
+        }
+      </fieldset> <!-- /toppings -->
+
+      <!-- [III]. FOOT -->
+      <button type="submit">&Build Pizza</button>
+    </form>
+  </main>
+  <footer>
+    &copy;2021-05-05 23:00, Matthew T. Theroux
+  </footer>
+</body>
+
+</html>
+<!-- EoF -->

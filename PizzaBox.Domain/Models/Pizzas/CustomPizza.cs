@@ -1,41 +1,48 @@
+// [I]. HEAD
+//  A] Libraries
 using System;
-using PizzaBox.Domain.Abstracts;
+using System.Collections.Generic;
 
+using PizzaBox.Domain.Abstracts;
+using PizzaBox.Domain.Models.Components;
+using PizzaBox.Domain.Models.Components.Toppings;
+
+///
 namespace PizzaBox.Domain.Models.Pizzas
 {
+  /// a pizza topped with all of the meats
   public class CustomPizza : APizza
   {
-    public override void addCrust(ASize crust)
-    {
-      Crust = crust;
-      Price += crust.price;
-      Price = Math.Round(Price, 2);
-    }
+    //  B] Fields and Properties
 
-    public override void addSauce(ASauce sauce)
-    {
-      Sauce = sauce;
-      Price += sauce.price;
-      Price = Math.Round(Price, 2);
-    }
 
-    public override void addTopping(params APizzaTopping[] toppings)
-    {
-      foreach (APizzaTopping topping in toppings)
-      {
-        if (topping == null)
-          break;
-        Toppings.Add(topping);
-        topping.pizza = this;
-        Price += topping.price;
-      }
-      Price = Math.Round(Price, 2);
-    }
-
+    // [II]. BODY
+    ///
     public CustomPizza()
     {
+      //  a) head
       Name = "Custom Pizza";
 
+      //  b)  body
+      // Factory();
+
+      //  c) foot  =created
     }
+
+    // private void Factory()
+    // {
+    //   AddSize();
+    //   AddCrust();
+    //   AddSauce();
+    //   AddCheese();
+
+
+    // }
+
+    // private void AddSize()
+    // {
+
+    // }
   }
-}
+}// /ns
+ // EoF

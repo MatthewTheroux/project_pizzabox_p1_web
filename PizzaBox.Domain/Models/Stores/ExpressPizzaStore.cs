@@ -1,15 +1,21 @@
+
 using PizzaBox.Domain.Abstracts;
+
 
 namespace PizzaBox.Domain.Models.Stores
 {
   public class ExpressPizzaStore : APizzaStore
   {
 
-    public ExpressPizzaStore()
+    public ExpressPizzaStore(string name = "")
     {
-      Name = "ExpressPizzaStore";
-      EntityName = "ExpressPizzaStore";
+      EntityName = "Express Pizza";
+      Name = name;
     }
 
-  }
-}
+    // [III]. FOOT
+    ///
+    public override string ToString() { return Name; }
+  }// /cla 
+}// /ns ..Stores
+ // EoF

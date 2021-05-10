@@ -1,23 +1,35 @@
-using System;
-
+// [I]. HEAD
+//  A] Libraries
 using PizzaBox.Domain.Abstracts;
-using PizzaBox.Domain.Abstracts.PizzaComponents;
-using PizzaBox.Domain.Abstracts.PizzaComponents.PizzaToppings;
+using PizzaBox.Domain.Models.Components;
+using PizzaBox.Domain.Models.Components.Toppings;
 
-using PizzaBox.Domain.Models.Toppings;
-
-
+///
 namespace PizzaBox.Domain.Models.Pizzas
 {
+  /// a pizza topped with all of the cheeses
   public class CheesePizza : APizza
   {
+    //  B] Fields and Properties
 
+
+    // [II]. BODY
+    ///
     public CheesePizza()
     {
-
+      //  a) head
       Name = "Cheese Pizza";
-      addTopping(new APizzaTopping[] { new Mozzerella() });
 
+      //  b)  body
+      // Cheese pizza needs a smooth crust, by default.
+      Crust = new PizzaCrust(PizzaCrust.Choice.BUBBLY_ITALIAN);
+
+      AddTopping(new Components.Toppings.PizzaToppingCheese(Components.Toppings.PizzaToppingCheese.Choice.CHEDDAR));
+      AddTopping(new Components.Toppings.PizzaToppingCheese(Components.Toppings.PizzaToppingCheese.Choice.MOZZ_PROV_MIX));
+      AddTopping(new Components.Toppings.PizzaToppingCheese(Components.Toppings.PizzaToppingCheese.Choice.GORGONZOLA));
+
+      //  c) foot  =created
     }
   }
-}
+}// /ns
+ // EoF

@@ -1,48 +1,39 @@
-using System;
+// [I]. HEAD
+//  A] Libraries
 using PizzaBox.Domain.Abstracts;
-using PizzaBox.Domain.Models.Sauces;
-using PizzaBox.Domain.Models.Toppings;
+using PizzaBox.Domain.Models.Components;
+using PizzaBox.Domain.Models.Components.Toppings;
 
+///
 namespace PizzaBox.Domain.Models.Pizzas
 {
+  /// a pizza topped with all of the meats
   public class MeatPizza : APizza
   {
-    public override void addCrust(ASize crust)
-    {
-      Size = size;
-      Crust = crust;
-      Price += crust.price;
-      Price = Math.Round(Price, 2);
-    }
+    //  B] Fields and Properties
 
-    public override void addSauce(APizzaSauce sauce)
-    {
-      Sauce = sauce;
-      Price += sauce.price;
-      Price = Math.Round(Price, 2);
-    }
 
-    public override void addTopping(params APizzaTopping[] toppings)
-    {
-
-      foreach (var topping in toppings)
-      {
-        if (topping == null)
-          break;
-
-        Toppings.Add(topping);
-        topping.pizza = this;
-        Price += topping.price;
-      }
-      Price = Math.Round(Price, 2);
-    }
+    // [II]. BODY
+    ///
     public MeatPizza()
     {
-      Name = "Meat Lover's Pizza";
-      addSauce(new Marinara());
-      addTopping(new APizzaTopping[3] { new Sausage(), new GrilledChicken(), new Pepporoni() });
+      //  a) head
+      Name = "Meat Pizza";
 
+      //  b)  body
+      // A Meat pizza could use a hearty crust and sauce, by default.
+      //Crust = new PizzaCrust(PizzaCrust.Choice.CHICAGO_DEEP_DISH); //<!>anti-req
+      //Sauce = new PizzaSauce(PizzaSauce.Choice.CHUNKY_MARINARA); //<!>anti-req
 
+      // Dump all of the meat toppings on the pizza.
+      AddTopping(new PizzaToppingMeat(PizzaToppingMeat.Choice.PEPPERONI));
+      AddTopping(new PizzaToppingMeat(PizzaToppingMeat.Choice.HAM));
+      AddTopping(new PizzaToppingMeat(PizzaToppingMeat.Choice.BACON));
+      AddTopping(new PizzaToppingMeat(PizzaToppingMeat.Choice.SAUSAGE));
+      AddTopping(new PizzaToppingMeat(PizzaToppingMeat.Choice.BEEF));
+
+      //  c) foot  =created
     }
-  }
-}
+  }// /cla 'MeatPizza'
+}// /ns '..Models.Pizzas'
+ // EoF
