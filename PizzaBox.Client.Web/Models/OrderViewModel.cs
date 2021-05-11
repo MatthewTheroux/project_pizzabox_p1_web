@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 using PizzaBox.Storage;
 using PizzaBox.Domain.Abstracts;
+using PizzaBox.Domain.Models;
 using PizzaBox.Domain.Models.Components;
 using PizzaBox.Domain.Models.Components.Toppings;
 
@@ -14,13 +15,18 @@ namespace PizzaBox.Client.Web.Models
   /// the page from which one orders pizza.
   public class OrderViewModel
   {
-    // Fetch the components available to make a pizza.
+    // Hold the components for the pizza and for the order.
     public List<PizzaSize> Sizes { get; set; } = new List<PizzaSize>();
     public List<PizzaCrust> Crusts { get; set; } = new List<PizzaCrust>();
     public List<PizzaSauce> Sauces { get; set; } = new List<PizzaSauce>();
     public List<PizzaToppingCheese> Cheeses { get; set; } = new List<PizzaToppingCheese>();
     public List<APizzaTopping> Toppings { get; set; } = new List<APizzaTopping>();
     public List<PizzaSpice> Spices { get; set; } = new List<PizzaSpice>();
+
+    public List<APizza> Pizzas { get; set; } = new List<APizza>();
+
+    public List<PizzaOrder> Orders { get; set; } = new List<PizzaOrder>();
+
 
 
     // Capture the user's selections.
@@ -55,15 +61,16 @@ namespace PizzaBox.Client.Web.Models
     public OrderViewModel() { }
 
     /// retrieve the pizza component choices from the UoW.
-    public void Populate(UnitOfWork unitOfWork)
+    public void PopulatePizzaComponentChoices(UnitOfWork unitOfWork)
     {
       Sizes = unitOfWork.Sizes.ToList(); //Select(size => !string.IsNullOrWhiteSpace(size.Name)).ToList();
       Crusts = unitOfWork.Crusts.ToList(); //.Select(crust => !string.IsNullOrWhiteSpace(crust.Name)).ToList();
-      Sauces = unitOfWork.Sauces.ToList();//.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
-      Cheeses = unitOfWork.Cheeses.ToList();//.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
-      Toppings = unitOfWork.Toppings.ToList();//.Select(topping => !string.IsNullOrWhiteSpace(topping.Name)).ToList();
-      Spices = unitOfWork.Spices.ToList();//.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
+      Sauces = unitOfWork.Sauces.ToList(); //.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
+      Cheeses = unitOfWork.Cheeses.ToList(); //.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
+      Toppings = unitOfWork.Toppings.ToList(); //.Select(topping => !string.IsNullOrWhiteSpace(topping.Name)).ToList();
+      Spices = unitOfWork.Spices.ToList(); //.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
     }// /md 'Populate' //<!> clean
+
 
     // [III]. FOOT
     /// <summary> Validate the form's user inputs before sending </summary>
