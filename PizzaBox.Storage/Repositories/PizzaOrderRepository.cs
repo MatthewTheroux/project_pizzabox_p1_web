@@ -35,7 +35,7 @@ namespace PizzaBox.Storage.Repositories
         _context.Orders.Add(order);
         didSucceed = true;
       }
-      catch (Exception e) { }
+      catch (Exception e) { e.ToString(); }
 
       //  c) foot
       return didSucceed;

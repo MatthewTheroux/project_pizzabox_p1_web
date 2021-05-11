@@ -51,7 +51,10 @@ namespace PizzaBox.Client.Web.Models
     public string SelectedSpice { get; set; }
 
 
+    /// a required parameterless constructor
+    public OrderViewModel() { }
 
+    /// retrieve the pizza component choices from the UoW.
     public void Populate(UnitOfWork unitOfWork)
     {
       Sizes = unitOfWork.Sizes.ToList(); //Select(size => !string.IsNullOrWhiteSpace(size.Name)).ToList();
@@ -62,6 +65,7 @@ namespace PizzaBox.Client.Web.Models
       Spices = unitOfWork.Spices.ToList();//.Select(sauce => !string.IsNullOrWhiteSpace(sauce.Name)).ToList();
     }// /md 'Populate' //<!> clean
 
+    // [III]. FOOT
     /// <summary> Validate the form's user inputs before sending </summary>
     /// <returns> validation error results </returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

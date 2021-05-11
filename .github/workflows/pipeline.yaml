@@ -1,0 +1,60 @@
+GitHub-workflow.json
+on: push
+name: c1-pipeline
+jobs:
+  test:
+    needs:
+      - build
+    runs-on: ubuntu-20.04
+    steps:
+      uses: actions/checkout@latest #v2
+      #run: XXdotnet build;XX
+      run: dotnet test 
+        -p:CollectCovereage=true 
+        -p CoverletOutputFormat=opencover 
+        -p: CoverletOutput='test_coverage/'
+        -l trx; # -l --logger=
+
+  analyse:
+    needs:
+      - build
+      - test
+    runs-on: ubuntu-@v20.04
+    env: # = "environment"
+      SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+    steps:
+      uses: actions/checkout@v2
+      run: dotnet tool install 
+        -g dotnet sonarscanner;
+      run: dotnet sonarscanner begin 
+        -k:'pizzabox' 
+        -o:'TeamAlamo.NET' 
+        -d:sonar.login:'$SONAR_TOKEN' 
+      run: dotnet build
+      run: dotnet sonarscanner end 
+        -d:sonar.login:'$SONAR_TOKEN';
+
+    package:
+      needs:
+        - analyze
+      runs on: ubuntu-20.04
+      steps:
+        - uses: actions/checkout@v2
+        - run: docker login
+        - run: docker image build -f Dockerfile -t pizzabox .
+        - run: docker image pizzabox fredbellotte/pizzabox
+        - run: docker push fredbellotte/pizzabox
+        - run: docker logout
+
+      deploy:
+        needs: 
+          - package
+        runs-on: ubuntu-20.04
+        #...
+        steps:
+          - uses: azure/webapps-deploy@v2
+            with:
+              app-name: pizzabox2021
+              images: fredbellotte/pizzabox
+
+        #deploy to Azure app services
