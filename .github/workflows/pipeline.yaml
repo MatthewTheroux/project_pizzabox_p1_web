@@ -35,26 +35,35 @@ jobs:
         -d:sonar.login:'$SONAR_TOKEN';
 
     package:
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_TOKEN: ${{secrets.DOCKER_TOKEN}}
       needs:
         - analyze
       runs on: ubuntu-20.04
       steps:
         - uses: actions/checkout@v2
-        - run: docker login
-        - run: docker image build -f Dockerfile -t pizzabox .
-        - run: docker image pizzabox fredbellotte/pizzabox
-        - run: docker push fredbellotte/pizzabox
+        - run: docker image build -f Dockerfile -t pizzabox . ;
+        #- run: docker image pizzabox fredbellotte/pizzabox;
+        #- run: docker image pizzabox matthewttheroux/pizzabox;
+        - run: docker image tag pizzabox matthewttheroux/pizzabox;
+
+        # *pipes* the prompt to the console.stdin
+        - run: echo @DOCKER_TOKEN  | docker login -v $DOCKER_USER --password-stdin;
+        - run: docker push matthewttheroux/pizzabox;
         - run: docker logout
 
+      #deploy to Azure app services
       deploy:
         needs: 
           - package
         runs-on: ubuntu-20.04
-        #...
         steps:
+          - uses: azure/login@v1
           - uses: azure/webapps-deploy@v2
             with:
-              app-name: pizzabox2021
-              images: fredbellotte/pizzabox
+              creds: ${{secrets.AZURE_CREDENTIALS}}
+              app-name: pizzabox_matthewttheroux
+              images: matthewttheroux/pizzabox
 
-        #deploy to Azure app services
+      
